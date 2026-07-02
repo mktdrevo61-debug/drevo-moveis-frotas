@@ -286,7 +286,7 @@ function FleetSection({ vehicles, loading }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fiori-border">
-              {['#', 'Placa', 'Modelo', 'Status', 'Motorista', 'Ações'].map((h) => (
+              {['#', 'Placa', 'Modelo', 'Status', 'Motorista', 'Destino', 'Ações'].map((h) => (
                 <th key={h} className="text-left text-xs font-semibold text-fiori-gray-mid uppercase tracking-wider py-2 pr-4">
                   {h}
                 </th>
@@ -304,6 +304,7 @@ function FleetSection({ vehicles, loading }) {
 
                 <td className="py-3 pr-4"><StatusBadge status={v.status} /></td>
                 <td className="py-3 pr-4 text-fiori-gray-mid">{v.current_driver_name ?? '—'}</td>
+                <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_destination ?? '—'}</td>
                 <td className="py-3 pr-4">
                   <button className="text-fiori-blue hover:underline text-xs font-medium">
                     Ver detalhes
@@ -561,14 +562,21 @@ export default function ManagerDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMetrics()
-      .then((data) => setMetrics(data))
-      .catch(() => {
-        // Graceful fallback to mock data when API is down
-        setMetrics(getMockMetrics());
-        toast('Usando dados de demonstração (API offline)', { icon: '⚠️' });
-      })
-      .finally(() => setLoading(false));
+    function loadData() {
+      getMetrics()
+        .then((data) => setMetrics(data))
+        .catch(() => {
+          setMetrics(getMockMetrics());
+        })
+        .finally(() => setLoading(false));
+    }
+
+    loadData(); // Load immediately on mount
+
+    // Auto-refresh every 10 seconds
+    const intervalId = setInterval(loadData, 10000);
+    
+    return () => clearInterval(intervalId); // Cleanup on unmount
   }, []);
 
   return (
