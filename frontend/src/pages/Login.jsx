@@ -153,17 +153,6 @@ export default function Login() {
           </button>
         </form>
 
-        {/* ── Dev hint ── */}
-        <div className="bg-fiori-gray-light rounded-xl p-3 text-center">
-          <p className="text-xs text-fiori-gray-mid font-medium">Credenciais de demonstração</p>
-          <p className="text-xs text-fiori-gray mt-1">
-            Motorista: <span className="font-mono">pedro@drevomoveis.com.br</span> / <span className="font-mono">drevo123</span>
-          </p>
-          <p className="text-xs text-fiori-gray">
-            Gestor: <span className="font-mono">mateus.moraes@drevomoveis.com.br</span> / <span className="font-mono">drevo123</span>
-          </p>
-        </div>
-
         {/* ── Footer ── */}
         <p className="text-center text-xs text-fiori-gray-mid">
           © {new Date().getFullYear()} Drevo Móveis · Todos os direitos reservados
