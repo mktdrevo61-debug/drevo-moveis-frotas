@@ -42,7 +42,7 @@ const registerFuelSchema = z.object({
  */
 router.post(
   '/',
-  authorize('driver'),
+  authorize('driver', 'manager'),
   validate(registerFuelSchema),
   fuelController.registerFuel,
 );

@@ -49,7 +49,7 @@ const updateStatusSchema = z.object({
  */
 router.post(
   '/',
-  authorize('driver'),
+  authorize('driver', 'manager'),
   validate(createDamageSchema),
   damageController.createDamage,
 );

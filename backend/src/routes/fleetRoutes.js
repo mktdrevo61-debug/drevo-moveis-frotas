@@ -50,7 +50,7 @@ router.get('/vehicles', fleetController.getVehicles);
  */
 router.post(
   '/handover/checkout',
-  authorize('driver'),
+  authorize('driver', 'manager'),
   validate(checkoutSchema),
   fleetController.checkout,
 );
@@ -62,7 +62,7 @@ router.post(
  */
 router.post(
   '/handover/checkin',
-  authorize('driver'),
+  authorize('driver', 'manager'),
   validate(checkinSchema),
   fleetController.checkin,
 );
@@ -73,7 +73,7 @@ router.post(
  */
 router.get(
   '/handover/active',
-  authorize('driver'),
+  authorize('driver', 'manager'),
   fleetController.getActiveHandover,
 );
 
