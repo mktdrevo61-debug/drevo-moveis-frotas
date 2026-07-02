@@ -564,11 +564,15 @@ export default function ManagerDashboard() {
   useEffect(() => {
     function loadData() {
       getMetrics()
-        .then((data) => setMetrics(data))
-        .catch(() => {
-          setMetrics(getMockMetrics());
-        })
-        .finally(() => setLoading(false));
+          .then((data) => setMetrics(data))
+          .catch((error) => {
+            console.error('Erro ao buscar métricas:', error);
+            // Mostrar toast para avisar o usuário, mas evitar flood
+            if (activeSection === 'dashboard' && !document.querySelector('.toast-metrics-error')) {
+               toast.error('Não foi possível carregar os dados reais. Verifique a conexão com o servidor.', { id: 'metrics-error', className: 'toast-metrics-error' });
+            }
+          })
+          .finally(() => setLoading(false));
     }
 
     loadData(); // Load immediately on mount
