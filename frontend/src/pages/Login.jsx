@@ -45,12 +45,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-black flex items-center justify-center p-4">
-      {/* Background pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-white/5 rounded-full" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-white/5 rounded-full" />
-      </div>
+    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
 
       {/* Card */}
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 flex flex-col gap-7">
