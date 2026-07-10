@@ -5,7 +5,7 @@
  */
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
-const db = require('../config/database'); // Postgres db
+const db = require('../config/database');
 
 async function syncDataToSheet() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -27,13 +27,46 @@ async function syncDataToSheet() {
     const doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
     await doc.loadInfo();
 
-    // Sincronizar Avarias (Damages)
+    // ── 1. Sincronizar Viagens (Handovers) ──
+    let viagensSheet = doc.sheetsByTitle['Viagens'];
+    const viagensHeaders = ['ID', 'Veículo', 'Motorista', 'Destino', 'KM Inicial', 'KM Final', 'Status', 'Data Saída', 'Data Retorno'];
+    if (!viagensSheet) {
+      viagensSheet = await doc.addSheet({ title: 'Viagens', headerValues: viagensHeaders });
+    } else {
+      await viagensSheet.clear();
+      await viagensSheet.setHeaderRow(viagensHeaders);
+    }
+
+    const { rows: viagens } = await db.query(`
+      SELECT h.id, v.plate, u.name as driver_name, h.destination, h.start_mileage, h.end_mileage, h.status, h.checkout_time, h.checkin_time
+      FROM handovers h
+      JOIN vehicles v ON v.id = h.vehicle_id
+      JOIN users u ON u.id = h.driver_id
+      ORDER BY h.checkout_time DESC
+    `);
+    
+    if (viagens.length > 0) {
+      await viagensSheet.addRows(viagens.map(v => ({
+        ID: v.id,
+        Veículo: v.plate,
+        Motorista: v.driver_name,
+        Destino: v.destination || 'N/A',
+        'KM Inicial': v.start_mileage,
+        'KM Final': v.end_mileage || 'Em Rota',
+        Status: v.status === 'active' ? 'Em Rota' : 'Concluída',
+        'Data Saída': new Date(v.checkout_time).toLocaleString('pt-BR'),
+        'Data Retorno': v.checkin_time ? new Date(v.checkin_time).toLocaleString('pt-BR') : '-'
+      })));
+    }
+
+    // ── 2. Sincronizar Avarias (Damages) ──
     let damageSheet = doc.sheetsByTitle['Avarias'];
+    const damageHeaders = ['ID', 'Veículo', 'Motorista', 'Peça', 'Gravidade', 'Status', 'Data'];
     if (!damageSheet) {
-      damageSheet = await doc.addSheet({ title: 'Avarias', headerValues: ['ID', 'Veículo', 'Motorista', 'Peça', 'Gravidade', 'Status', 'Data'] });
+      damageSheet = await doc.addSheet({ title: 'Avarias', headerValues: damageHeaders });
     } else {
       await damageSheet.clear();
-      await damageSheet.setHeaderRow(['ID', 'Veículo', 'Motorista', 'Peça', 'Gravidade', 'Status', 'Data']);
+      await damageSheet.setHeaderRow(damageHeaders);
     }
 
     const { rows: damages } = await db.query(`
@@ -50,19 +83,20 @@ async function syncDataToSheet() {
         Veículo: d.plate,
         Motorista: d.driver_name,
         Peça: d.part_id,
-        Gravidade: d.severity,
-        Status: d.status,
+        Gravidade: d.severity === 'high' ? 'Alta' : (d.severity === 'medium' ? 'Média' : 'Baixa'),
+        Status: d.status === 'fixed' ? 'Resolvido' : (d.status === 'repairing' ? 'Em Conserto' : 'Pendente'),
         Data: new Date(d.created_at).toLocaleString('pt-BR')
       })));
     }
 
-    // Sincronizar Abastecimentos (Fuel)
+    // ── 3. Sincronizar Abastecimentos (Fuel) ──
     let fuelSheet = doc.sheetsByTitle['Abastecimentos'];
+    const fuelHeaders = ['ID', 'Veículo', 'Motorista', 'Litros', 'Custo Total', 'Tipo', 'Data'];
     if (!fuelSheet) {
-      fuelSheet = await doc.addSheet({ title: 'Abastecimentos', headerValues: ['ID', 'Veículo', 'Motorista', 'Litros', 'Custo Total', 'Tipo', 'Data'] });
+      fuelSheet = await doc.addSheet({ title: 'Abastecimentos', headerValues: fuelHeaders });
     } else {
       await fuelSheet.clear();
-      await fuelSheet.setHeaderRow(['ID', 'Veículo', 'Motorista', 'Litros', 'Custo Total', 'Tipo', 'Data']);
+      await fuelSheet.setHeaderRow(fuelHeaders);
     }
 
     const { rows: fuels } = await db.query(`
@@ -79,13 +113,13 @@ async function syncDataToSheet() {
         Veículo: f.plate,
         Motorista: f.driver_name,
         Litros: f.liters,
-        'Custo Total': f.total_cost,
+        'Custo Total': 'R$ ' + f.total_cost,
         Tipo: f.fuel_type,
         Data: new Date(f.created_at).toLocaleString('pt-BR')
       })));
     }
 
-    console.log('✅ Google Sheets sincronizado com sucesso!');
+    console.log('✅ Google Sheets sincronizado com sucesso! (Viagens, Avarias e Abastecimentos)');
   } catch (error) {
     console.error('❌ Erro na sincronização com Google Sheets:', error);
   }

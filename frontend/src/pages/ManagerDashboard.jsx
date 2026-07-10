@@ -287,7 +287,7 @@ function FleetSection({ vehicles, loading }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fiori-border">
-              {['#', 'Placa', 'Modelo', 'Status', 'KM', 'Motorista', 'Destino', 'Ações'].map((h) => (
+              {['#', 'Placa', 'Modelo', 'Status', 'KM Inicial', 'KM Final', 'Motorista', 'Destino', 'Ações'].map((h) => (
                 <th key={h} className="text-left text-xs font-semibold text-fiori-gray-mid uppercase tracking-wider py-2 pr-4">
                   {h}
                 </th>
@@ -296,7 +296,7 @@ function FleetSection({ vehicles, loading }) {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} className="py-10"><LoadingSpinner label="Carregando frota..." /></td></tr>
+              <tr><td colSpan={9} className="py-10"><LoadingSpinner label="Carregando frota..." /></td></tr>
             ) : vehicles.map((v, i) => (
               <tr key={v.id} className="border-b border-fiori-border/50 hover:bg-fiori-gray-light transition-colors">
                 <td className="py-3 pr-4 text-fiori-gray-mid text-xs">{i + 1}</td>
@@ -304,7 +304,8 @@ function FleetSection({ vehicles, loading }) {
                 <td className="py-3 pr-4">{v.model}</td>
 
                 <td className="py-3 pr-4"><StatusBadge status={v.status} /></td>
-                <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_mileage != null ? formatMileage(v.current_mileage) : '—'}</td>
+                <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.initial_km != null ? formatMileage(v.initial_km) : '—'}</td>
+                <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.final_km != null ? formatMileage(v.final_km) : (v.status === 'in_route' ? 'Em andamento' : (v.current_mileage != null ? formatMileage(v.current_mileage) : '—'))}</td>
                 <td className="py-3 pr-4 text-fiori-gray-mid">{v.current_driver_name ?? '—'}</td>
                 <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_destination ?? '—'}</td>
                 <td className="py-3 pr-4">
@@ -589,7 +590,7 @@ export default function ManagerDashboard() {
     <div className="min-h-screen flex flex-col bg-fiori-gray-light">
       <Navbar />
 
-      <div className="flex flex-1 max-w-screen-xl mx-auto w-full">
+      <div className="flex flex-1 w-full">
 
         {/* ── Sidebar ── */}
         <aside className="w-56 flex-shrink-0 bg-white border-r border-fiori-border min-h-full pt-6 hidden md:flex flex-col">

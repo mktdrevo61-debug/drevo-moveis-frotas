@@ -1,19 +1,29 @@
 /**
  * cronService.js
  * --------------
- * Background jobs running at scheduled intervals.
+ * Gerencia tarefas agendadas (cron jobs) do sistema.
  */
 const cron = require('node-cron');
 const { syncDataToSheet } = require('./googleSheetsService');
 
 function startCronJobs() {
-  console.log('🕒 Starting background jobs...');
+  console.log('⏳ Iniciando serviço de agendamentos (Cron Jobs)...');
 
-  // Sync to Google Sheets every 15 minutes
-  cron.schedule('*/15 * * * *', async () => {
-    console.log('🔄 Running scheduled Google Sheets sync...');
-    await syncDataToSheet();
+  // Roda todos os dias às 20:00 no fuso horário do sistema
+  // "0 20 * * *" = minuto 0, hora 20, todos os dias
+  cron.schedule('0 20 * * *', async () => {
+    console.log('⏰ [20:00] Iniciando rotina diária de sincronização (sem apagar histórico)...');
+    try {
+      await syncDataToSheet();
+      console.log('✅ Sincronização concluída com sucesso!');
+    } catch (error) {
+      console.error('❌ Erro na rotina diária:', error);
+    }
+  }, {
+    timezone: "America/Sao_Paulo"
   });
+
+  console.log('✅ Cron Jobs configurados com sucesso.');
 }
 
 module.exports = { startCronJobs };
