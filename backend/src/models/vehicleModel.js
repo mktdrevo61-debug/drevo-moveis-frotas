@@ -20,13 +20,11 @@ async function findAll() {
     FROM vehicles v
     LEFT JOIN handovers h ON h.vehicle_id = v.id AND h.status = 'active'
     LEFT JOIN users u ON u.id = h.driver_id
-    LEFT JOIN LATERAL (
-        SELECT start_mileage, end_mileage 
-        FROM handovers 
-        WHERE vehicle_id = v.id 
-        ORDER BY created_at DESC 
-        LIMIT 1
-    ) lh ON true
+    LEFT JOIN (
+        SELECT DISTINCT ON (vehicle_id) vehicle_id, start_mileage, end_mileage
+        FROM handovers
+        ORDER BY vehicle_id, created_at DESC
+    ) lh ON lh.vehicle_id = v.id
     ORDER BY v.plate ASC
   `);
   return result.rows;
