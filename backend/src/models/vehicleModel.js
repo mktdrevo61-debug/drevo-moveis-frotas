@@ -23,7 +23,7 @@ async function findAll() {
     LEFT JOIN (
         SELECT DISTINCT ON (vehicle_id) vehicle_id, start_mileage, end_mileage
         FROM handovers
-        ORDER BY vehicle_id, created_at DESC
+        ORDER BY vehicle_id, checkout_time DESC
     ) lh ON lh.vehicle_id = v.id
     ORDER BY v.plate ASC
   `);
