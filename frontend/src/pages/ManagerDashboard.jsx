@@ -228,7 +228,7 @@ function DashboardSection({ metrics, loading }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-fiori-border">
-                {['Placa', 'Modelo', 'Status', 'Motorista'].map((h) => (
+                {['Placa', 'Modelo', 'Status', 'KM', 'Motorista'].map((h) => (
                   <th
                     key={h}
                     className="text-left text-xs font-semibold text-fiori-gray-mid uppercase tracking-wider py-2 pr-4"
@@ -254,6 +254,7 @@ function DashboardSection({ metrics, loading }) {
                     <td className="py-3 pr-4">
                       <StatusBadge status={v.status} />
                     </td>
+                    <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_mileage != null ? formatMileage(v.current_mileage) : '—'}</td>
                     <td className="py-3 pr-4 text-fiori-gray-mid">{v.current_driver_name ?? '—'}</td>
                   </tr>
                 ))
@@ -286,7 +287,7 @@ function FleetSection({ vehicles, loading }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fiori-border">
-              {['#', 'Placa', 'Modelo', 'Status', 'Motorista', 'Destino', 'Ações'].map((h) => (
+              {['#', 'Placa', 'Modelo', 'Status', 'KM', 'Motorista', 'Destino', 'Ações'].map((h) => (
                 <th key={h} className="text-left text-xs font-semibold text-fiori-gray-mid uppercase tracking-wider py-2 pr-4">
                   {h}
                 </th>
@@ -303,6 +304,7 @@ function FleetSection({ vehicles, loading }) {
                 <td className="py-3 pr-4">{v.model}</td>
 
                 <td className="py-3 pr-4"><StatusBadge status={v.status} /></td>
+                <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_mileage != null ? formatMileage(v.current_mileage) : '—'}</td>
                 <td className="py-3 pr-4 text-fiori-gray-mid">{v.current_driver_name ?? '—'}</td>
                 <td className="py-3 pr-4 text-fiori-gray-mid font-medium">{v.current_destination ?? '—'}</td>
                 <td className="py-3 pr-4">

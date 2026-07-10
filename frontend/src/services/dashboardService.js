@@ -80,11 +80,11 @@ export function getMockMetrics() {
       { name: 'Baixa', value: 41 },
     ],
     vehicles: [
-      { id: 1, plate: 'ABC-1234', model: 'VW Delivery 9.170', year: 2022, status: 'Em Rota', driver: 'Carlos Silva' },
-      { id: 2, plate: 'DEF-5678', model: 'Mercedes Atego 1719', year: 2021, status: 'Disponível', driver: null },
-      { id: 3, plate: 'GHI-9012', model: 'Ford Cargo 1317', year: 2020, status: 'Manutenção', driver: null },
-      { id: 4, plate: 'JKL-3456', model: 'Iveco Daily 70C17', year: 2023, status: 'Em Rota', driver: 'Maria Fernanda' },
-      { id: 5, plate: 'MNO-7890', model: 'Fiat Ducato Maxi', year: 2022, status: 'Disponível', driver: null },
+      { id: 1, plate: 'ABC-1234', model: 'VW Delivery 9.170', year: 2022, status: 'Em Rota', driver: 'Carlos Silva', current_mileage: 45230 },
+      { id: 2, plate: 'DEF-5678', model: 'Mercedes Atego 1719', year: 2021, status: 'Disponível', driver: null, current_mileage: 82100 },
+      { id: 3, plate: 'GHI-9012', model: 'Ford Cargo 1317', year: 2020, status: 'Manutenção', driver: null, current_mileage: 110450 },
+      { id: 4, plate: 'JKL-3456', model: 'Iveco Daily 70C17', year: 2023, status: 'Em Rota', driver: 'Maria Fernanda', current_mileage: 12890 },
+      { id: 5, plate: 'MNO-7890', model: 'Fiat Ducato Maxi', year: 2022, status: 'Disponível', driver: null, current_mileage: 56700 },
     ],
   };
 }
