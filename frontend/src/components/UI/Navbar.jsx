@@ -47,7 +47,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="bg-fiori-blue sticky top-0 z-40 shadow-md">
+    <header className="bg-black sticky top-0 z-40 shadow-md">
       <div className="w-full px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
