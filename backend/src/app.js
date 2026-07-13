@@ -41,8 +41,47 @@ app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/photos',    require('./routes/photoRoutes'));
 
 // ---------------------------------------------------------------------------
-// Health check
+// Health check & Debug Routes
 // ---------------------------------------------------------------------------
+
+app.get('/api/test-sheets', async (req, res) => {
+  const { GoogleSpreadsheet } = require('google-spreadsheet');
+  const { JWT } = require('google-auth-library');
+  
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const sheetId = process.env.GOOGLE_SHEET_ID;
+
+  if (!email || !privateKey || !sheetId) {
+    return res.status(400).json({ error: 'Faltam variáveis de ambiente (Email, Key ou Sheet ID)' });
+  }
+
+  try {
+    const serviceAccountAuth = new JWT({
+      email,
+      key: privateKey,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    const doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
+    await doc.loadInfo();
+    
+    res.json({ 
+      success: true, 
+      message: 'Conexão com Google Sheets bem-sucedida!', 
+      title: doc.title,
+      email: email,
+      sheetId: sheetId
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error_message: error.message,
+      error_stack: error.stack,
+      hint: 'Verifique se a chave privada está inteira, se o ID da planilha está certo e se você compartilhou a planilha com o e-mail do robô.'
+    });
+  }
+});
 
 app.get('/health', (req, res) => {
   res.json({
