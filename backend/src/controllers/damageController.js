@@ -7,6 +7,7 @@
 
 const damageModel  = require('../models/damageModel');
 const handoverModel = require('../models/handoverModel');
+const { syncDataToSheet } = require('../services/googleSheetsService');
 
 // Valid body part identifiers — must match the SVG diagram in the frontend
 const VALID_PART_IDS = [
@@ -66,6 +67,9 @@ async function createDamage(req, res, next) {
       severity,
       notes: notes ?? null,
     });
+
+    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
+    syncDataToSheet().catch(console.error);
 
     return res.status(201).json({
       success: true,
@@ -170,9 +174,12 @@ async function updateDamageStatus(req, res, next) {
       });
     }
 
+    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
+    syncDataToSheet().catch(console.error);
+
     return res.status(200).json({
       success: true,
-      message: `Damage status updated to "\${status}".`,
+      message: `Damage status updated to "${status}".`,
       data: {
         damage: {
           ...updated,

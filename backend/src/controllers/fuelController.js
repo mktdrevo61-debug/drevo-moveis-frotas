@@ -11,6 +11,7 @@
 const fuelModel  = require('../models/fuelModel');
 const OcrService = require('../services/OcrService');
 const S3Service  = require('../services/S3Service');
+const { syncDataToSheet } = require('../services/googleSheetsService');
 
 // ---------------------------------------------------------------------------
 // POST /api/fuel
@@ -57,6 +58,9 @@ async function registerFuel(req, res, next) {
       receipt_image_url,
       ocr_cnpj_extracted: null, // Removed OCR mock
     });
+
+    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
+    syncDataToSheet().catch(console.error);
 
     return res.status(201).json({
       success: true,

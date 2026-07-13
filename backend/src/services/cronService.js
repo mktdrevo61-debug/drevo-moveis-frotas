@@ -11,6 +11,7 @@ function startCronJobs() {
 
   // Roda todos os dias às 20:00 no fuso horário do sistema
   // "0 20 * * *" = minuto 0, hora 20, todos os dias
+  /* Desativado: A sincronização com Google Sheets agora ocorre em Tempo Real pelos controllers.
   cron.schedule('0 20 * * *', async () => {
     console.log('⏰ [20:00] Iniciando rotina diária de sincronização (sem apagar histórico)...');
     try {
@@ -22,6 +23,7 @@ function startCronJobs() {
   }, {
     timezone: "America/Sao_Paulo"
   });
+  */
 
   console.log('✅ Cron Jobs configurados com sucesso.');
 }

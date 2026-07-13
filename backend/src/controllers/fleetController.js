@@ -10,6 +10,7 @@
 
 const vehicleModel  = require('../models/vehicleModel');
 const handoverModel = require('../models/handoverModel');
+const { syncDataToSheet } = require('../services/googleSheetsService');
 
 // ---------------------------------------------------------------------------
 // GET /api/fleet/vehicles
@@ -102,9 +103,12 @@ async function checkout(req, res, next) {
     // Mark vehicle as in-use
     await vehicleModel.updateStatus(vehicle_id, 'in_use');
 
+    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
+    syncDataToSheet().catch(console.error);
+
     return res.status(201).json({
       success: true,
-      message: `Vehicle \${vehicle.plate} checked out successfully.`,
+      message: `Vehicle ${vehicle.plate} checked out successfully.`,
       data: { handover },
     });
   } catch (err) {
@@ -146,7 +150,7 @@ async function checkin(req, res, next) {
     if (end_mileage < handover.start_mileage) {
       return res.status(400).json({
         success: false,
-        message: `End mileage (\${end_mileage}) cannot be less than start mileage (\${handover.start_mileage}).`,
+        message: `End mileage (${end_mileage}) cannot be less than start mileage (${handover.start_mileage}).`,
       });
     }
 
@@ -163,9 +167,12 @@ async function checkin(req, res, next) {
     await vehicleModel.updateMileage(handover.vehicle_id, end_mileage);
     await vehicleModel.updateStatus(handover.vehicle_id, 'available');
 
+    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
+    syncDataToSheet().catch(console.error);
+
     return res.status(200).json({
       success: true,
-      message: `Vehicle \${handover.plate} checked in successfully.`,
+      message: `Vehicle ${handover.plate} checked in successfully.`,
       data: { handover: completedHandover },
     });
   } catch (err) {
