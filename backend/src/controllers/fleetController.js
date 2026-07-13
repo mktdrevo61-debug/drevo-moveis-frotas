@@ -103,8 +103,8 @@ async function checkout(req, res, next) {
     // Mark vehicle as in-use
     await vehicleModel.updateStatus(vehicle_id, 'in_use');
 
-    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
-    syncDataToSheet().catch(console.error);
+    // Assíncrono: dispara sincronização para o Google Sheets (Await obrigatório para Vercel)
+    await syncDataToSheet().catch(console.error);
 
     return res.status(201).json({
       success: true,
@@ -167,8 +167,8 @@ async function checkin(req, res, next) {
     await vehicleModel.updateMileage(handover.vehicle_id, end_mileage);
     await vehicleModel.updateStatus(handover.vehicle_id, 'available');
 
-    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
-    syncDataToSheet().catch(console.error);
+    // Assíncrono: dispara sincronização para o Google Sheets (Await obrigatório para Vercel)
+    await syncDataToSheet().catch(console.error);
 
     return res.status(200).json({
       success: true,

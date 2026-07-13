@@ -59,14 +59,14 @@ async function registerFuel(req, res, next) {
       ocr_cnpj_extracted: null, // Removed OCR mock
     });
 
-    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
-    syncDataToSheet().catch(console.error);
+    // Assíncrono: dispara sincronização para o Google Sheets (Await obrigatório para Vercel)
+    await syncDataToSheet().catch(console.error);
 
     return res.status(201).json({
       success: true,
-      message: 'Fuel log registered successfully.',
+      message: 'Fuel log recorded successfully.',
       data: {
-        fuel_log: fuelLog
+        fuelLog,
       },
     });
   } catch (err) {

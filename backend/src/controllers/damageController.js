@@ -68,8 +68,8 @@ async function createDamage(req, res, next) {
       notes: notes ?? null,
     });
 
-    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
-    syncDataToSheet().catch(console.error);
+    // Assíncrono: dispara sincronização para o Google Sheets (Await obrigatório para Vercel)
+    await syncDataToSheet().catch(console.error);
 
     return res.status(201).json({
       success: true,
@@ -174,8 +174,8 @@ async function updateDamageStatus(req, res, next) {
       });
     }
 
-    // Assíncrono: dispara sincronização para o Google Sheets em segundo plano
-    syncDataToSheet().catch(console.error);
+    // Assíncrono: dispara sincronização para o Google Sheets (Await obrigatório para Vercel)
+    await syncDataToSheet().catch(console.error);
 
     return res.status(200).json({
       success: true,
