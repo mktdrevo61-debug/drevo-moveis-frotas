@@ -9,6 +9,7 @@
  */
 
 const fuelModel  = require('../models/fuelModel');
+const vehicleModel = require('../models/vehicleModel');
 const OcrService = require('../services/OcrService');
 const S3Service  = require('../services/S3Service');
 const { syncDataToSheet } = require('../services/googleSheetsService');
@@ -37,6 +38,7 @@ async function registerFuel(req, res, next) {
   try {
     const {
       vehicle_id,
+      current_mileage,
       receipt_image,          // base64 image string
       liters:     manualLiters,
       total_cost: manualCost,
@@ -47,6 +49,10 @@ async function registerFuel(req, res, next) {
 
     // Store base64 image directly for now
     const receipt_image_url = receipt_image || null;
+
+    if (current_mileage) {
+      await vehicleModel.updateMileage(vehicle_id, current_mileage);
+    }
 
     // Persist the fuel log
     const fuelLog = await fuelModel.create({

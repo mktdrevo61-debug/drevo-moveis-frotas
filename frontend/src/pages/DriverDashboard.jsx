@@ -278,6 +278,7 @@ function HandoverTab() {
 // ─── Tab 2: Fuel ──────────────────────────────────────────────────────────────
 function FuelTab({ vehicles }) {
   const [vehicleId, setVehicleId] = useState('');
+  const [currentMileage, setCurrentMileage] = useState('');
   const [liters, setLiters] = useState('');
   const [cost, setCost] = useState('');
   const [receiptImage, setReceiptImage] = useState(null);
@@ -297,6 +298,7 @@ function FuelTab({ vehicles }) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!vehicleId) return toast.error('Selecione o veículo.');
+    if (!currentMileage || isNaN(currentMileage)) return toast.error('Informe a quilometragem atual.');
     if (!liters || isNaN(liters) || Number(liters) <= 0)
       return toast.error('Informe a quantidade em litros.');
     if (!cost || isNaN(cost) || Number(cost) <= 0)
@@ -308,12 +310,14 @@ function FuelTab({ vehicles }) {
     try {
       await recordFuel({
         vehicle_id: vehicleId,
+        current_mileage: Number(currentMileage),
         liters: Number(liters),
         cost: Number(cost),
         fuel_type: 'gasoline', // Always gasoline as requested
         receipt_base64: receiptImage,
       });
       toast.success('Abastecimento registrado com sucesso!');
+      setCurrentMileage('');
       setLiters('');
       setCost('');
       setReceiptImage(null);
@@ -343,6 +347,20 @@ function FuelTab({ vehicles }) {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Mileage */}
+      <div className="flex flex-col gap-1.5 mt-2">
+        <label className="text-sm font-semibold text-fiori-gray">Quilometragem Atual (km)</label>
+        <input
+          type="number"
+          step="1"
+          min="0"
+          value={currentMileage}
+          onChange={(e) => setCurrentMileage(e.target.value)}
+          placeholder="Ex: 45230"
+          className="input-base"
+        />
       </div>
 
       {/* Liters + Cost */}

@@ -54,8 +54,8 @@ async function syncDataToSheet() {
         'KM Inicial': v.start_mileage,
         'KM Final': v.end_mileage || 'Em Rota',
         Status: v.status === 'active' ? 'Em Rota' : 'Concluída',
-        'Data Saída': new Date(v.checkout_time).toLocaleString('pt-BR'),
-        'Data Retorno': v.checkin_time ? new Date(v.checkin_time).toLocaleString('pt-BR') : '-'
+        'Data Saída': new Date(v.checkout_time).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+        'Data Retorno': v.checkin_time ? new Date(v.checkin_time).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'
       })));
     }
 
@@ -85,7 +85,7 @@ async function syncDataToSheet() {
         Peça: d.part_id,
         Gravidade: d.severity === 'high' ? 'Alta' : (d.severity === 'medium' ? 'Média' : 'Baixa'),
         Status: d.status === 'fixed' ? 'Resolvido' : (d.status === 'repairing' ? 'Em Conserto' : 'Pendente'),
-        Data: new Date(d.created_at).toLocaleString('pt-BR')
+        Data: new Date(d.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
       })));
     }
 
@@ -115,7 +115,7 @@ async function syncDataToSheet() {
         Litros: f.liters,
         'Custo Total': 'R$ ' + f.total_cost,
         Tipo: f.fuel_type,
-        Data: new Date(f.created_at).toLocaleString('pt-BR')
+        Data: new Date(f.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
       })));
     }
 

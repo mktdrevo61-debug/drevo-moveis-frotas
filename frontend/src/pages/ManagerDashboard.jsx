@@ -392,7 +392,7 @@ function DamagesSection() {
                     </span>
                   </td>
                   <td className="py-3 pr-4 text-fiori-gray-mid max-w-xs truncate">{d.notes || '—'}</td>
-                  <td className="py-3 pr-4 text-fiori-gray-mid whitespace-nowrap">{formatDate(d.created_at, false)}</td>
+                  <td className="py-3 pr-4 text-fiori-gray-mid whitespace-nowrap">{formatDate(d.created_at)}</td>
                   <td className="py-3 pr-4">
                     {d.latest_photo ? (
                       <button
@@ -535,7 +535,7 @@ function FuelSection() {
                   <td className="py-3 pr-4 text-fiori-gray-mid">{log.driver_name}</td>
                   <td className="py-3 pr-4">{log.liters.toFixed(1)} L</td>
                   <td className="py-3 pr-4 text-fiori-blue font-semibold">{formatCurrency(log.total_cost)}</td>
-                  <td className="py-3 pr-4 text-fiori-gray-mid whitespace-nowrap">{formatDate(log.created_at, false)}</td>
+                  <td className="py-3 pr-4 text-fiori-gray-mid whitespace-nowrap">{formatDate(log.created_at)}</td>
                   <td className="py-3 pr-4">
                     {log.receipt_image_url ? (
                       <a href={log.receipt_image_url} download={`Nota_${log.plate}_${log.id}.jpg`} target="_blank" rel="noreferrer" className="text-fiori-blue hover:underline text-xs font-medium flex items-center gap-1">

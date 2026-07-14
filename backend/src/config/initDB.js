@@ -161,38 +161,19 @@ async function seedVehicles() {
         'INSERT INTO vehicles (plate, model, year, image_url) VALUES ($1, $2, $3, $4)',
         [vehicle.plate, vehicle.model, vehicle.year, vehicle.image_url]
       );
-      console.log(`  🚛 Vehicle seeded: \${vehicle.plate} — \${vehicle.model}`);
+      console.log(`  🚛 Vehicle seeded: ${vehicle.plate} — ${vehicle.model}`);
     }
   }
 }
 
-async function seedDamages() {
-  const damagesToSeed = [
-    { vehicle_id: 1, driver_id: 2, part_id: 'door_front_left', severity: 'high'   },
-    { vehicle_id: 1, driver_id: 2, part_id: 'bumper_rear',      severity: 'medium' },
-  ];
-
-  for (const damage of damagesToSeed) {
-    const res = await db.query(
-      'SELECT id FROM damages WHERE vehicle_id = $1 AND part_id = $2',
-      [damage.vehicle_id, damage.part_id]
-    );
-    if (res.rows.length === 0) {
-      await db.query(
-        'INSERT INTO damages (vehicle_id, driver_id, part_id, severity) VALUES ($1, $2, $3, $4)',
-        [damage.vehicle_id, damage.driver_id, damage.part_id, damage.severity]
-      );
-      console.log(`  💥 Damage seeded: \${damage.part_id} on vehicle \${damage.vehicle_id}`);
-    }
-  }
-}
+// Fake damages seeding removed to prevent them from syncing to the spreadsheet.
 
 // ---------------------------------------------------------------------------
 // Main export
 // ---------------------------------------------------------------------------
 
 async function initializeDB() {
-  console.log('\\n🔧 Initializing database schema...');
+  console.log('\n🔧 Initializing database schema...');
 
   await db.query(CREATE_USERS);
   await db.query(CREATE_VEHICLES);
@@ -214,12 +195,15 @@ async function initializeDB() {
   const salt = bcrypt.genSaltSync(10);
   const passwordHash = bcrypt.hashSync(SEED_PASSWORD, salt);
 
-  console.log('\\n🌱 Seeding initial data...');
+  console.log('\n🌱 Seeding initial data...');
   await seedUsers(passwordHash);
   await seedVehicles();
-  await seedDamages();
+  
+  // Cleanup any previously seeded fake damages from vehicle 1 and driver 2 so they don't sync to the spreadsheet
+  console.log('🧹 Cleaning up any fake damages...');
+  await db.query(`DELETE FROM damages WHERE vehicle_id = 1 AND driver_id = 2`);
 
-  console.log('\\n✅ Database initialization complete.\\n');
+  console.log('\n✅ Database initialization complete.\n');
 }
 
 module.exports = { initializeDB };

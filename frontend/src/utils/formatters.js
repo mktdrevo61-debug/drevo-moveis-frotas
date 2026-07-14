@@ -39,6 +39,7 @@ export function formatDate(date, includeTime = true) {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
+      timeZone: 'America/Sao_Paulo'
     }).format(d);
 
     if (!includeTime) return datePart;
@@ -46,6 +47,7 @@ export function formatDate(date, includeTime = true) {
     const timePart = new Intl.DateTimeFormat('pt-BR', {
       hour: '2-digit',
       minute: '2-digit',
+      timeZone: 'America/Sao_Paulo'
     }).format(d);
 
     return `${datePart} às ${timePart}`;
