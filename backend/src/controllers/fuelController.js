@@ -61,6 +61,7 @@ async function registerFuel(req, res, next) {
       liters: manualLiters,
       total_cost: manualCost,
       fuel_type: manualFuelType || 'gasoline',
+      current_mileage,
       receipt_image_url,
       ocr_cnpj_extracted: null, // Removed OCR mock
     });

@@ -91,7 +91,7 @@ async function syncDataToSheet() {
 
     // ── 3. Sincronizar Abastecimentos (Fuel) ──
     let fuelSheet = doc.sheetsByTitle['Abastecimentos'];
-    const fuelHeaders = ['ID', 'Veículo', 'Motorista', 'Litros', 'Custo Total', 'Tipo', 'Data'];
+    const fuelHeaders = ['ID', 'Veículo', 'Motorista', 'Litros', 'Custo Total', 'Tipo', 'KM Atual', 'Data'];
     if (!fuelSheet) {
       fuelSheet = await doc.addSheet({ title: 'Abastecimentos', headerValues: fuelHeaders });
     } else {
@@ -100,7 +100,7 @@ async function syncDataToSheet() {
     }
 
     const { rows: fuels } = await db.query(`
-      SELECT f.id, v.plate, u.name as driver_name, f.liters, f.total_cost, f.fuel_type, f.created_at
+      SELECT f.id, v.plate, u.name as driver_name, f.liters, f.total_cost, f.fuel_type, f.current_mileage, f.created_at
       FROM fuel_logs f
       JOIN vehicles v ON v.id = f.vehicle_id
       JOIN users u ON u.id = f.driver_id
@@ -115,6 +115,7 @@ async function syncDataToSheet() {
         Litros: f.liters,
         'Custo Total': 'R$ ' + f.total_cost,
         Tipo: f.fuel_type,
+        'KM Atual': f.current_mileage || '-',
         Data: new Date(f.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })
       })));
     }

@@ -17,14 +17,15 @@ async function create({
   liters,
   total_cost,
   fuel_type,
+  current_mileage,
   receipt_image_url,
   ocr_cnpj_extracted,
 }) {
   const insertResult = await db.query(`
     INSERT INTO fuel_logs
-      (vehicle_id, driver_id, liters, total_cost, fuel_type, receipt_image_url, ocr_cnpj_extracted)
+      (vehicle_id, driver_id, liters, total_cost, fuel_type, current_mileage, receipt_image_url, ocr_cnpj_extracted)
     VALUES
-      ($1, $2, $3, $4, $5, $6, $7)
+      ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING id
   `, [
     vehicle_id,
@@ -32,6 +33,7 @@ async function create({
     liters,
     total_cost,
     fuel_type,
+    current_mileage ?? null,
     receipt_image_url ?? null,
     ocr_cnpj_extracted ?? null,
   ]);

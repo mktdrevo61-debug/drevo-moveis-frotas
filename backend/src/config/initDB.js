@@ -85,6 +85,7 @@ const CREATE_FUEL_LOGS = `
     liters              REAL NOT NULL,
     total_cost          REAL NOT NULL,
     fuel_type           TEXT NOT NULL,
+    current_mileage     INTEGER,
     receipt_image_url   TEXT,
     ocr_cnpj_extracted  TEXT,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -185,6 +186,12 @@ async function initializeDB() {
 
   try {
     await db.query(`ALTER TABLE handovers ADD COLUMN destination TEXT`);
+  } catch (err) {
+    // Column might already exist, ignore error
+  }
+
+  try {
+    await db.query(`ALTER TABLE fuel_logs ADD COLUMN current_mileage INTEGER`);
   } catch (err) {
     // Column might already exist, ignore error
   }
