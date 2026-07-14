@@ -8,6 +8,7 @@
 
 const db = require('./database');
 const bcrypt = require('bcryptjs');
+const { syncDataToSheet } = require('../services/googleSheetsService');
 
 // ---------------------------------------------------------------------------
 // DDL — Table definitions
@@ -230,6 +231,14 @@ async function initializeDB() {
   }
 
   console.log('\n✅ Database initialization complete.\n');
+  
+  // Sync immediately to Google Sheets so clean data and new columns are visible
+  try {
+    console.log('📊 Sincronizando com o Google Sheets na inicialização...');
+    await syncDataToSheet();
+  } catch (err) {
+    console.error('⚠️ Erro ao sincronizar com Google Sheets na inicialização:', err);
+  }
 }
 
 module.exports = { initializeDB };
