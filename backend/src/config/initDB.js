@@ -207,29 +207,6 @@ async function initializeDB() {
   await seedUsers(passwordHash);
   await seedVehicles();
   
-  // Cleanup fake data (preserves Jonathan, and Claudemir's data from today/yesterday)
-  console.log('🧹 Cleaning up fake data as requested...');
-  
-  const cleanupCondition = `
-    WHERE driver_id NOT IN (SELECT id FROM users WHERE email IN ('claudemir', 'jonathan', 'claudemir@drevomoveis.com.br'))
-    OR (driver_id = (SELECT id FROM users WHERE email IN ('claudemir', 'claudemir@drevomoveis.com.br') LIMIT 1) AND created_at < CURRENT_DATE - INTERVAL '2 days')
-  `;
-  
-  const handoverCleanupCondition = `
-    WHERE driver_id NOT IN (SELECT id FROM users WHERE email IN ('claudemir', 'jonathan', 'claudemir@drevomoveis.com.br'))
-    OR (driver_id = (SELECT id FROM users WHERE email IN ('claudemir', 'claudemir@drevomoveis.com.br') LIMIT 1) AND checkout_time < CURRENT_DATE - INTERVAL '2 days')
-  `;
-
-  try {
-    await db.query(`DELETE FROM vehicle_photos ${cleanupCondition}`);
-    await db.query(`DELETE FROM damages ${cleanupCondition}`);
-    await db.query(`DELETE FROM fuel_logs ${cleanupCondition}`);
-    await db.query(`DELETE FROM handovers ${handoverCleanupCondition}`);
-    console.log('✅ Fake data cleaned up successfully.');
-  } catch (err) {
-    console.error('⚠️ Error cleaning up fake data:', err);
-  }
-
   console.log('\n✅ Database initialization complete.\n');
   
   // Sync immediately to Google Sheets so clean data and new columns are visible
