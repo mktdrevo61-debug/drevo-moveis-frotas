@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['favicon.jpg', 'apple-touch-icon.png'],
       devOptions: {
         enabled: true
       },
@@ -18,7 +19,7 @@ export default defineConfig({
         theme_color: '#0070F2',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
+        start_url: '.',
         icons: [
           {
             src: '/icon-192.png',
