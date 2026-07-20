@@ -154,10 +154,10 @@ async function seedVehicles() {
     { plate: 'UNO-0002', model: 'Fiat Uno Verde',  year: 2022, image_url: '/vehicles/uno_verde.png' },
     { plate: 'UNO-0003', model: 'Fiat Uno Branco', year: 2023, image_url: '/vehicles/uno_branco.png' },
     { plate: 'STR-0001', model: 'Fiat Strada',     year: 2024, image_url: '/vehicles/strada.png' },
-    { plate: 'CB500X',   model: 'CB-500 X (moto)', year: 2024, image_url: '/vehicles/strada.png' },
-    { plate: 'FIESTA',   model: 'Fiesta',          year: 2024, image_url: '/vehicles/uno_cinza.png' },
-    { plate: 'VECTRA',   model: 'Vectra',          year: 2024, image_url: '/vehicles/uno_branco.png' },
-    { plate: 'CRUZE',    model: 'Cruze',           year: 2024, image_url: '/vehicles/uno_verde.png' },
+    { plate: 'CB500X',   model: 'CB-500 X (moto)', year: 2024, image_url: '/vehicles/cb500x.jpg' },
+    { plate: 'FIESTA',   model: 'Fiesta',          year: 2024, image_url: '/vehicles/fiesta.jpg' },
+    { plate: 'VECTRA',   model: 'Vectra',          year: 2024, image_url: '/vehicles/vectra.jpg' },
+    { plate: 'CRUZE',    model: 'Cruze',           year: 2024, image_url: '/vehicles/cruze.jpg' },
   ];
 
   for (const vehicle of vehiclesToSeed) {
