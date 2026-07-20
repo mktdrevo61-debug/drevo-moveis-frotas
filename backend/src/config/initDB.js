@@ -168,6 +168,11 @@ async function seedVehicles() {
         [vehicle.plate, vehicle.model, vehicle.year, vehicle.image_url]
       );
       console.log(`  🚛 Vehicle seeded: ${vehicle.plate} — ${vehicle.model}`);
+    } else {
+      await db.query(
+        'UPDATE vehicles SET image_url = $1 WHERE plate = $2',
+        [vehicle.image_url, vehicle.plate]
+      );
     }
   }
 }
